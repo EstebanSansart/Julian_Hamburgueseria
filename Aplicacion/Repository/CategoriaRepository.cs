@@ -12,6 +12,10 @@ namespace Aplicacion.Repository
         {
             _context = context;
         }
-        
+
+        public Task<(int totalRegistros, IEnumerable<Categoria> registros)> GetAllAsync(int pageIndex, int pageSize, string search)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

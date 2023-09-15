@@ -1,20 +1,25 @@
-
-
 using System.Linq.Expressions;
 using Dominio.Entities;
-using Dominio.Interfaces;
+using Dominio.Interfaces.IPagerParam;
 using Microsoft.EntityFrameworkCore;
 using Persistencia;
 
 namespace Aplicacion.Repository;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
-{
+public abstract class  GenericRepository<T> where T : BaseEntity{
     private readonly DbAppContext _context;
+    private readonly DbSet<T> _entities;
 
-    public GenericRepository(DbAppContext context)
-    {
+    public GenericRepository(DbAppContext context){
         _context = context;
+        _entities = _context.Set<T>();
+    }   
+
+    public async virtual Task<T> FindFirst(Expression<Func<T, bool>> expression){
+        if (expression is not null){
+            return await _entities.Where(expression).FirstAsync();
+        }
+        return await _entities.FindAsync();
     }
 
     public virtual void Add(T entity)
@@ -63,13 +68,28 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         _context.Set<T>()
             .Update(entity);
     }
-    public virtual async Task<(int totalRegistros, IEnumerable<T> registros)> GetAllAsync(int pageIndex, int pageSize, string _search)
-    {
-        var totalRegistros = await _context.Set<T>().CountAsync();
-        var registros = await _context.Set<T>()
-            .Skip((pageIndex - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-        return (totalRegistros, registros);
+
+    public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression = null, IParams param = null){
+        if(param is null){
+            return await GetAll(expression);
+        }
+        return await GetAllPaginated(param,expression);
+
     }
+    protected virtual async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> expression = null){
+        if (expression is not null){
+            return await _entities.Where(expression).ToListAsync();
+        }
+        return await _entities.ToListAsync();
+    }
+
+    private async Task<IEnumerable<T>> GetAllPaginated(IParams param, Expression<Func<T, bool>> expression = null ){
+        return (await GetAll(expression))
+                .Where(x => x.Nombre == param.Search)                
+                .Skip((param.PageIndex - 1) * param.PageSize)
+                .Take(param.PageSize)
+                .ToList();
+            
+    }
+
 }

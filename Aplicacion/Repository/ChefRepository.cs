@@ -15,6 +15,11 @@ public class ChefRepository : GenericRepository<Chef>, IChefRepository
         _context = context;
     }
 
+    public Task<(int totalRegistros, IEnumerable<Chef> registros)> GetAllAsync(int pageIndex, int pageSize, string search)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<Chef> GetByUsernameAsync(string username)
     {
         throw new NotImplementedException();
