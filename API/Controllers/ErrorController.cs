@@ -1,4 +1,4 @@
-using API.Helpers.Errors;
+/*using API.Helpers.Errors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -10,4 +10,4 @@ public class ErrorsController:BaseApiController
     {
         return new ObjectResult(new ApiResponse(code));
     }
-}
+}*/

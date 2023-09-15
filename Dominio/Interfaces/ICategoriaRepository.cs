@@ -4,6 +4,5 @@ namespace Dominio.Interfaces
 {
     public interface ICategoriaRepository : IGenericRepository<Categoria>
     {
-        
     }
 }

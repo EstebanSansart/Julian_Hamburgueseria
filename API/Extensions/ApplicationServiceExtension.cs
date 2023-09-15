@@ -1,7 +1,7 @@
 
 using System.Text;
 using API.Helpers;
-using API.Helpers.Errors;
+//using API.Helpers.Errors;
 using API.Services;
 using Aplicacion.UnitOfWork;
 using AspNetCoreRateLimit;
@@ -63,7 +63,7 @@ namespace API.Extensions
                     };
                 });
         }
-        public static void AddValidationErrors(this IServiceCollection services)
+        /*public static void AddValidationErrors(this IServiceCollection services)
         {
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -82,7 +82,7 @@ namespace API.Extensions
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
-        }
+        }*/
         public static void ConfigureRateLimiting(this IServiceCollection services)
         {
             services.AddMemoryCache();

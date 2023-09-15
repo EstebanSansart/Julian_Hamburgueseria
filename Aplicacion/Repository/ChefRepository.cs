@@ -8,7 +8,7 @@ namespace Aplicacion.Repository;
 
 public class ChefRepository : GenericRepository<Chef>, IChefRepository
 {
-     private readonly DbAppContext _context;
+    private readonly DbAppContext _context;
 
     public ChefRepository(DbAppContext context) : base(context)
     {

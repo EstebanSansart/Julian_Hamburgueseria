@@ -8,9 +8,10 @@ namespace Aplicacion.Repository
     {
         private readonly DbAppContext _context;
 
-    public CategoriaRepository(DbAppContext context) : base(context)
-    {
-        _context = context;
-    }
+        public CategoriaRepository(DbAppContext context) : base(context)
+        {
+            _context = context;
+        }
+        
     }
 }

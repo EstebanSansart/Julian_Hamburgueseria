@@ -1,6 +1,7 @@
+using System.Reflection;
 using API.Extensions;
 using API.Helpers;
-using API.Helpers.Errors;
+//using API.Helpers.Errors;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -28,11 +29,12 @@ builder.Services.AddControllers(options =>
 	options.ReturnHttpNotAcceptable = true;
 }).AddXmlSerializerFormatters();
 
-builder.Services.AddValidationErrors();
+//builder.Services.AddValidationErrors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureApiVersioning();
+builder.Services.AddAutoMapper(Assembly.GetEntryAssembly());
 builder.Services.ConfigureCors();
 builder.Services.ConfigureRateLimiting();
 builder.Services.AddJwt(builder.Configuration);
@@ -52,7 +54,7 @@ builder.Services.AddDbContext<DbAppContext>(options =>
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddleware>();
+//app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
