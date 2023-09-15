@@ -1,6 +1,7 @@
 using API.Extensions;
 using API.Helpers;
 using API.Helpers.Errors;
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistencia;
@@ -31,9 +32,9 @@ builder.Services.AddValidationErrors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.ConfigureApiVersioning();
 builder.Services.ConfigureCors();
-
+builder.Services.ConfigureRateLimiting();
 builder.Services.AddJwt(builder.Configuration);
 
 builder.Services.AddAuthorization(opts =>{
@@ -81,7 +82,7 @@ app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseIpRateLimiting();
 app.MapControllers();
 
 app.Run();

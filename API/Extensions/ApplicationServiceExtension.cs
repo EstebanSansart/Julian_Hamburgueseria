@@ -4,12 +4,14 @@ using API.Helpers;
 using API.Helpers.Errors;
 using API.Services;
 using Aplicacion.UnitOfWork;
+using AspNetCoreRateLimit;
 using Dominio.Entities;
 using Dominio.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Extensions
@@ -27,8 +29,8 @@ namespace API.Extensions
 
         public static void AddAplicacionServices(this IServiceCollection services)
         {
-            services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPasswordHasher<Chef>, PasswordHasher<Chef>>();
+            //services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthorizationHandler, GlobalVerbRoleHandler>();
         }
@@ -81,7 +83,41 @@ namespace API.Extensions
                 };
             });
         }
-
+        public static void ConfigureRateLimiting(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddInMemoryRateLimiting();
+            services.Configure<IpRateLimitOptions>(options =>
+            {
+                options.EnableEndpointRateLimiting = true;
+                options.StackBlockedRequests = false;
+                options.HttpStatusCode = 429;
+                options.RealIpHeader = "X-Real-Ip";
+                options.GeneralRules = new List<RateLimitRule>
+                {
+                    new RateLimitRule
+                    {
+                        Endpoint = "*",
+                        Period = "20s",
+                        Limit = 4
+                    }
+                };
+            });
+        }
+        public static void ConfigureApiVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ApiVersionReader = ApiVersionReader.Combine(
+                    new QueryStringApiVersionReader("ver"),
+                    new HeaderApiVersionReader("X-Version")
+                );
+                options.ReportApiVersions = true;
+            });
+        }
     }
 
 }

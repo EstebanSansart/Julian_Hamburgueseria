@@ -1,5 +1,3 @@
-
-
 using Dominio.Entities;
 
 namespace Dominio.Interfaces;

@@ -13,14 +13,15 @@ namespace Persistencia
         public DbAppContext(DbContextOptions options) : base(options)
         {
         }
+        public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<Chef> Chefs { get; set; }
+        public DbSet<Hamburguesa> Hamburguesas { get; set; }
+        public DbSet<Ingrediente> Ingredientes { get; set; }
+        public DbSet<HamburguesaIngrediente> HamburguesasIngredientes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
-         public DbSet<Rol> Roles { get; set; }
-        public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<UsuarioRoles> UsuariosRoles { get; set; }
     }
 }
